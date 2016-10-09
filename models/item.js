@@ -5,7 +5,8 @@ var mongoose = require('mongoose');
 var ItemSchema   = new mongoose.Schema({
   name: String,
   cost: Number,
-  quantity: Number
+  quantity: Number,
+  userId: String
 });
 
 // Export the Mongoose model

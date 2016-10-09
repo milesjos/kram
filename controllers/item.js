@@ -9,6 +9,7 @@ exports.postItems = function(req, res) {
   item.name = req.body.name;
   item.cost = req.body.cost;
   item.quantity = req.body.quantity;
+  item.userId = req.user._id;
 
   // Save the item and check for errors
   item.save(function(err) {
