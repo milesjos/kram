@@ -2,6 +2,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var Item = require('./models/item');
+var itemController = require('./controllers/item')
 
 var app = express();
 

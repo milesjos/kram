@@ -1,4 +1,4 @@
-var items = require('../models/item');
+var Item = require('../models/item');
 
 // Create endpoint /api/items for POSTS
 exports.postItems = function(req, res) {
