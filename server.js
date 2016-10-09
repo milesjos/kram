@@ -29,10 +29,10 @@ router.get('/', function (req, res) {
 });
 
 // Create a new route with the prefix /items
-var itemsRoute = router.route('/items');
+var itemRoute = router.route('/items');
 
 // Create endpoint /api/items for POSTS
-itemsRoute.post(function(req, res) {
+itemRoute.post(function(req, res) {
   // Create a new instance of the Item model
   var item = new Item();
 
@@ -51,7 +51,7 @@ itemsRoute.post(function(req, res) {
 });
 
 // Create endpoint /api/items for GET
-itemsRoute.get(function(req, res) {
+itemRoute.get(function(req, res) {
   // Use the Item model to find all item
   Item.find(function(err, items) {
     if (err)
@@ -61,16 +61,46 @@ itemsRoute.get(function(req, res) {
   });
 });
 
-var itemsRoute = router.route('/items/:item_id');
+var itemRoute = router.route('/items/:item_id');
 
 // Create endpoint /api/items/:item_id for GET
-itemsRoute.get(function(req, res) {
+itemRoute.get(function(req, res) {
   // Use the Item model to find a specific item
   Item.findById(req.params.item_id, function(err, item) {
     if (err)
       res.send(err);
 
     res.json(item);
+  });
+});
+
+// Create endpoint /api/items/:item_id for PUT
+itemRoute.put(function(req, res) {
+  // Use the Item model to find a specific item
+  Item.findById(req.params.item_id, function(err, item) {
+    if (err)
+      res.send(err);
+
+    // Update the existing item attributes
+    if (req.body.quantity) {
+      item.quantity = req.body.quantity;
+    }
+
+    if (req.body.name) {
+      item.name = req.body.name;
+    }
+
+    if (req.body.cost) {
+      item.cost = req.body.cost;
+    }
+
+    // Save the item and check for errors
+    item.save(function(err) {
+      if (err)
+        res.send(err);
+
+      res.json(item);
+    });
   });
 });
 
