@@ -45,6 +45,10 @@ router.route('/users')
   .post(userController.postUsers)
   .get(authController.isAuthenticated, userController.getUsers);
 
+// Create endpoint handlers for /users/:user_id
+router.route('/users/:user_id')
+  .get(authController.isAuthenticated, userController.getUser);
+
 // Register all our routes with /api
 app.use('/api', router);
 
