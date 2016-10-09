@@ -1,8 +1,11 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
+var passport = require('passport');
 var Item = require('./models/item');
-var itemController = require('./controllers/item')
+var itemController = require('./controllers/item');
+var userController = require('./controllers/user');
+var authController = require('./controllers/auth');
 
 var app = express();
 
@@ -14,11 +17,8 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
-app.use(require('morgan')('dev'));
-var session = require('express-session');
-var FileStore = require('session-file-store')(session);
+// Use the passport package in our application
+app.use(passport.initialize());
 
 // Create our Express router
 var router = express.Router();
@@ -31,22 +31,19 @@ router.get('/', function (req, res) {
 
 // Create endpoint handlers for /items
 router.route('/items')
-  .post(itemController.postItems)
-  .get(itemController.getItems);
+  .post(authController.isAuthenticated, itemController.postItems)
+  .get(authController.isAuthenticated, itemController.getItems);
 
 // Create endpoint handlers for /items/:item_id
 router.route('/items/:item_id')
-  .get(itemController.getItem)
-  .put(itemController.putItem)
-  .delete(itemController.deleteItem);
+  .get(authController.isAuthenticated, itemController.getItem)
+  .put(authController.isAuthenticated, itemController.putItem)
+  .delete(authController.isAuthenticated, itemController.deleteItem);
 
-app.use(session({
-  name: 'server-session-cookie-id',
-  secret: 'my express secret',
-  saveUninitialized: true,
-  resave: true,
-  store: new FileStore()
-}));
+// Create endpoint handlers for /users
+router.route('/users')
+  .post(userController.postUsers)
+  .get(authController.isAuthenticated, userController.getUsers);
 
 // Register all our routes with /api
 app.use('/api', router);
