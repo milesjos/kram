@@ -50,6 +50,30 @@ itemsRoute.post(function(req, res) {
   });
 });
 
+// Create endpoint /api/items for GET
+itemsRoute.get(function(req, res) {
+  // Use the Item model to find all item
+  Item.find(function(err, items) {
+    if (err)
+      res.send(err);
+
+    res.json(items);
+  });
+});
+
+var itemsRoute = router.route('/items/:item_id');
+
+// Create endpoint /api/items/:item_id for GET
+itemsRoute.get(function(req, res) {
+  // Use the Item model to find a specific item
+  Item.findById(req.params.item_id, function(err, item) {
+    if (err)
+      res.send(err);
+
+    res.json(item);
+  });
+});
+
 app.use(session({
   name: 'server-session-cookie-id',
   secret: 'my express secret',
