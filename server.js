@@ -5,13 +5,13 @@ var Item = require('./models/item');
 
 var app = express();
 
+// Connect to the kram MongoDB
+mongoose.connect('mongodb://localhost:27017/MHacks8');
+
 // Use the body-parser package in our application
 app.use(bodyParser.urlencoded({
   extended: true
 }));
-
-// Connect to the kram MongoDB
-mongoose.connect('mongodb://localhost:27017/MHacks8');
 
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
@@ -28,92 +28,16 @@ router.get('/', function (req, res) {
   });
 });
 
-// Create a new route with the prefix /items
-var itemRoute = router.route('/items');
+// Create endpoint handlers for /items
+router.route('/items')
+  .post(itemController.postItems)
+  .get(itemController.getItems);
 
-// Create endpoint /api/items for POSTS
-itemRoute.post(function(req, res) {
-  // Create a new instance of the Item model
-  var item = new Item();
-
-  // Set the item properties that came from the POST data
-  item.name = req.body.name;
-  item.cost = req.body.cost;
-  item.quantity = req.body.quantity;
-
-  // Save the item and check for errors
-  item.save(function(err) {
-    if (err)
-      res.send(err);
-
-    res.json({ message: 'Item added to the Kram!', data: item });
-  });
-});
-
-// Create endpoint /api/items for GET
-itemRoute.get(function(req, res) {
-  // Use the Item model to find all item
-  Item.find(function(err, items) {
-    if (err)
-      res.send(err);
-
-    res.json(items);
-  });
-});
-
-var itemRoute = router.route('/items/:item_id');
-
-// Create endpoint /api/items/:item_id for GET
-itemRoute.get(function(req, res) {
-  // Use the Item model to find a specific item
-  Item.findById(req.params.item_id, function(err, item) {
-    if (err)
-      res.send(err);
-
-    res.json(item);
-  });
-});
-
-// Create endpoint /api/items/:item_id for PUT
-itemRoute.put(function(req, res) {
-  // Use the Item model to find a specific item
-  Item.findById(req.params.item_id, function(err, item) {
-    if (err)
-      res.send(err);
-
-    // Update the existing item attributes
-    if (req.body.quantity) {
-      item.quantity = req.body.quantity;
-    }
-
-    if (req.body.name) {
-      item.name = req.body.name;
-    }
-
-    if (req.body.cost) {
-      item.cost = req.body.cost;
-    }
-
-    // Save the item and check for errors
-    item.save(function(err) {
-      if (err)
-        res.send(err);
-
-      res.json(item);
-    });
-  });
-});
-
-// Create endpoint /api/items/:item_id for DELETE
-itemRoute.delete(function(req, res) {
-  // Use the Item model to find a specific item and remove it
-  Item.findByIdAndRemove(req.params.item_id, function(err) {
-    if (err)
-      res.send(err);
-
-    res.json({ message: 'Item removed from the kram!' });
-  });
-});
+// Create endpoint handlers for /items/:item_id
+router.route('/items/:item_id')
+  .get(itemController.getItem)
+  .put(itemController.putItem)
+  .delete(itemController.deleteItem);
 
 app.use(session({
   name: 'server-session-cookie-id',
