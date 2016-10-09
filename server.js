@@ -104,6 +104,17 @@ itemRoute.put(function(req, res) {
   });
 });
 
+// Create endpoint /api/items/:item_id for DELETE
+itemRoute.delete(function(req, res) {
+  // Use the Item model to find a specific item and remove it
+  Item.findByIdAndRemove(req.params.item_id, function(err) {
+    if (err)
+      res.send(err);
+
+    res.json({ message: 'Item removed from the kram!' });
+  });
+});
+
 app.use(session({
   name: 'server-session-cookie-id',
   secret: 'my express secret',
