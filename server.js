@@ -42,8 +42,13 @@ router.route('/items/:item_id')
 
 // Create endpoint handlers for /users
 router.route('/users')
-  .post(userController.postUsers)
   .get(authController.isAuthenticated, userController.getUsers);
+
+router.route('/signup')
+  .post(userController.signupUser);
+
+router.route('/login')
+  .post(userController.loginUser);
 
 // Create endpoint handlers for /users/:user_id
 router.route('/users/:user_id')

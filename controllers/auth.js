@@ -5,7 +5,7 @@ var User = require('../models/user');
 
 passport.use(new BasicStrategy(
   function(username, password, callback) {
-    User.findOne({ username: username }, function (err, user) {
+    User.findOne({username: username}, function (err, user) {
       if (err) { return callback(err); }
 
       // No user found with that username
@@ -15,6 +15,7 @@ passport.use(new BasicStrategy(
       user.verifyPassword(password, function(err, isMatch) {
         if (err) { return callback(err); }
 
+        console.log(password);
         // Password did not match
         if (!isMatch) { return callback(null, false); }
 
